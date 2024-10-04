@@ -1,0 +1,42 @@
+import sys
+import math
+
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def rsa_factorize(n):
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            q = n // i
+            if is_prime(i) and is_prime(q):
+                return i, q
+    return None, None
+
+def rsa(file_path):
+    with open(file_path, 'r') as f:
+        number = int(f.readline().strip())
+    
+    p, q = rsa_factorize(number)
+    if p and q:
+        print(f"{number}={p}*{q}")
+    else:
+        print(f"Couldn't factorize {number} into primes.")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        sys.exit(1)
+    
+    file_path = sys.argv[1]
+    rsa(file_path)
